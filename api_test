@@ -1,0 +1,82 @@
+import requests
+import pytest
+import unittest
+import json
+import jsonpath
+
+@EnesErözkan 
+
+class TestCheck(unittest.TestCase):
+    url = "https://jsonplaceholder.typicode.com"
+    api_url = "/users/1"
+    api_url2 = "/users/"
+    post_url = "/posts"
+
+
+    json_format = {
+        "id": 1,
+        "name": "Leanne Graham",
+        "username": "Bret",
+        "email": "Sincere@april.biz",
+        "address": {
+            "street": "Kulas Light",
+            "suite": "Apt. 556",
+            "city": "Gwenborough",
+            "zipcode": "92998-3874",
+            "geo": {
+                "lat": "-37.3159",
+                "lng": "81.1496"
+            }
+        },
+        "phone": "1-770-736-8031 x56442",
+        "website": "hildegard.org",
+        "company": {
+            "name": "Romaguera-Crona",
+            "catchPhrase": "Multi-layered client-server neural-net",
+            "bs": "harness real-time e-markets"
+        }
+    }
+
+    def test_check_status_code(self):
+        response = requests.get(self.url + self.api_url)
+        print(response)
+        assert response.status_code == 200
+
+    def test_check_json_format(self):
+        response = requests.get(self.url + self.api_url)
+        print(response.json())
+
+    def test_check_headers(self):
+        response = requests.get(self.url + self.api_url)
+        print(response.headers)
+
+    def test_check_content_type(self):
+        response = requests.get(self.url + self.api_url)
+        content_type = response.headers['Content-Type']
+        assert response.headers['Content-Type'] == content_type
+
+    def test_check_name_value(self):
+        response = requests.get(self.url + self.api_url)
+        response_body = response.json()
+        assert 'name' in response_body
+        print(response_body['name'])
+        assert response_body['name'] == 'Leanne Graham'
+
+    def test_check_company_name(self):
+        response = requests.get(self.url + self.api_url)
+        response_body = response.json()
+        response_value = response_body['company']['name']
+        assert response_body['company']['name'] == response_value
+
+    def test_check_number_of_users(self):
+        response = requests.get(self.url + self.api_url2)
+        response_body = response.json()
+        count = len(response_body)
+        assert len(response_body) == count, "The value is not equal!"
+
+    def test_check_post_status(self):
+        post_model = {"userId": 1, "id": 1, "title": "This is my title.", "body": "This is my body."}
+        response = requests.post(self.url + self.post_url, json=post_model)
+        code = response.status_code
+        print(code)
+        assert response.status_code == code, "The value is not equal!"
